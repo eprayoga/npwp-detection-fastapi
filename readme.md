@@ -43,8 +43,8 @@ project/
 ### 1. Clone repo
 
 ```bash
-git clone <repo-url>
-cd project
+git clone https://github.com/eprayoga/npwp-detection-fastapi
+cd npwp-detection-fastapi
 ```
 
 ### 2. Buat Virtual Environment
@@ -103,13 +103,14 @@ http://127.0.0.1:8000
 {
   "nama": "PT ABC Indonesia",
   "alamat": "Jl. Sudirman No. 10 Jakarta",
-  "npwp": "12.345.678.9-012.345",
+  "npwp": "12.345.678.9-012.xxx",
   "tanggal_terdaftar": "01-01-2020",
   "model_output": [
     {
-      "class": "nama",
+      "label": "nama",
+      "confidence": 0.92,
       "bbox": [x1, y1, x2, y2],
-      "conf": 0.92
+      "ocr_text": "PT ABC Indonesia"
     },
     ...
   ]
@@ -150,15 +151,3 @@ utils/npwp_utils.py
 ## 📄 Lisensi
 
 Project ini tidak memiliki lisensi khusus (bebas digunakan untuk kebutuhan dev).
-
----
-
-## 🤝 Kontribusi
-
-Pull request dipersilakan. Open issue jika ada bug atau request fitur.
-
----
-
-## 👨‍💻 Author
-
-Dibuat oleh: **(isi nama kamu di sini)**
