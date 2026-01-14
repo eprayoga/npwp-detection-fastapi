@@ -1,10 +1,10 @@
-# NPWP OCR API (FastAPI + YOLOv8)
+# NPWP OCR API (FastAPI + YOLOv11)
 
-API untuk ekstraksi informasi dari dokumen NPWP menggunakan model YOLOv8 dan OCR (EasyOCR).
+API untuk ekstraksi informasi dari dokumen NPWP menggunakan model YOLOv11 dan OCR (EasyOCR).
 
 ## ✨ Fitur
 
-- Inference model YOLOv8 custom (`best.pt`)
+- Inference model YOLOv11 custom (`best.pt`)
 - Ekstrak 4 field NPWP:
   - `nama`
   - `alamat`
