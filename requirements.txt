@@ -1,8 +1,10 @@
 fastapi
 uvicorn
+pillow
 ultralytics
+torch
+python-multipart
 opencv-python
 numpy
 pydantic
 easyocr
-python-multipart

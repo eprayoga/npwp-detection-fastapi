@@ -1,42 +1,49 @@
 import cv2
+import numpy as np
 import easyocr
+from utils.ocr_preprocess import preprocess_for_ocr
 
-reader = easyocr.Reader(['id'])
+reader = easyocr.Reader(['en'], gpu=False)
 
-def extract_fields_from_yolo(img, results, model):
-    extracted = {
-        "alamat": "",
-        "nama": "",
-        "npwp": "",
-        "tanggal_terdaftar": "",
-    }
+CLASSES = ["alamat", "nama", "npwp", "tanggal_terdaftar"]
 
-    model_output = []
 
-    for r in results:
-        for box in r.boxes:
-            cls_id = int(box.cls)
-            label = model.names[cls_id]
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
+def ocr_extract(image_bgr, bbox):
+    x1, y1, x2, y2 = map(int, bbox)
+    roi = image_bgr[y1:y2, x1:x2]
 
-            # Crop area bbox
-            crop = img[y1:y2, x1:x2]
+    # Preprocess
+    proc = preprocess_for_ocr(roi)
 
-            # OCR
-            ocr_res = reader.readtext(crop, detail=0)
-            text = " ".join(ocr_res).strip()
+    # OCR
+    results = reader.readtext(proc)
+    text = " ".join([res[1] for res in results])
+    return text
 
-            # Mapping OCR ke field
-            lower_label = label.lower()
-            if lower_label in extracted:
-                extracted[lower_label] = text
 
-            # Simpan data bbox YOLO
-            model_output.append({
-                "label": lower_label,
-                "confidence": float(box.conf),
-                "bbox": [x1, y1, x2, y2],
-                "ocr_text": text
-            })
+def extract_fields_from_yolo(image_np, results, model):
+    extracted = {cls: "" for cls in CLASSES}
+    detection_output = []
 
-    return extracted, model_output
+    boxes = results[0].boxes
+    if boxes is None:
+        return extracted, detection_output
+
+    for box in boxes:
+        cls_id = int(box.cls[0])
+        cls_name = model.names[cls_id]
+        conf = float(box.conf[0])
+        bbox = box.xyxy[0].tolist()
+
+        # Save detection info
+        detection_output.append({
+            "class": cls_name,
+            "confidence": conf,
+            "bbox": bbox
+        })
+
+        if cls_name in CLASSES:
+            text = ocr_extract(image_np, bbox)
+            extracted[cls_name] = text
+
+    return extracted, detection_output

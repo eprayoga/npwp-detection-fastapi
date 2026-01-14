@@ -12,7 +12,6 @@ API untuk ekstraksi informasi dari dokumen NPWP menggunakan model YOLOv8 dan OCR
   - `tanggal_terdaftar`
 - Response JSON hasil OCR
 - Endpoint FastAPI
-- Support virtual environment
 - Dependency management via `requirements.txt`
 
 ---
@@ -32,6 +31,7 @@ project/
 │
 ├── utils/
 │   └── npwp_utils.py
+│   └── ocr_preprocess.py
 │
 └── venv/
 ```
@@ -101,16 +101,18 @@ http://127.0.0.1:8000
 
 ```json
 {
-  "nama": "PT ABC Indonesia",
-  "alamat": "Jl. Sudirman No. 10 Jakarta",
-  "npwp": "12.345.678.9-012.xxx",
-  "tanggal_terdaftar": "01-01-2020",
-  "model_output": [
+  "status": "success",
+  "data": {
+    "nama": "PT ABC Indonesia",
+    "alamat": "Jl. Sudirman No. 10 Jakarta",
+    "npwp": "12.345.678.9-012.xxx",
+    "tanggal_terdaftar": "01-01-2020",
+  },
+  "detections": [
     {
-      "label": "nama",
+      "class": "nama",
       "confidence": 0.92,
-      "bbox": [x1, y1, x2, y2],
-      "ocr_text": "PT ABC Indonesia"
+      "bbox": [x1, y1, x2, y2]
     },
     ...
   ]
@@ -137,14 +139,8 @@ File utilitas OCR & parsing ada di:
 
 ```
 utils/npwp_utils.py
+utils/ocr_preprocess.py
 ```
-
----
-
-## 📝 Catatan
-
-- GPU tidak wajib, CPU akan tetap bisa inference (lebih lambat).
-- Pastikan `python-multipart` terinstall untuk upload form data.
 
 ---
 
